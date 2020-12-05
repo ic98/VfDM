@@ -38,13 +38,19 @@ def filter_df(df, date_start = None, date_end = None):
 
 
 def clean_df(df):
+    regex_code = re.compile('<code>.*?</code>', flags=re.DOTALL)
+    regex_html = re.compile('<[^>]+>')
+    regex_newline = re.compile("\\t|\\n|\\r")
 
     # remove code blocks
-    regex_code = re.compile('<code>.*?</code>', flags=re.DOTALL)
     cleaned = df.replace(regex_code, '', regex=True)
 
     # remove html blocks
-    cleaned = cleaned.replace('<[^>]+>', '', regex=True)
+    cleaned = cleaned.replace(regex_html, '', regex=True)
+
+    #remove new line
+    cleaned = cleaned.replace(regex_newline, ' ', regex=True)
+
     return cleaned
 
 def df_to_csv(df, output_path):
