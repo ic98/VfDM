@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-
 import argparse
 import re
 import pandas as pd
 from datetime import datetime
+
 def main():
     args = init_parser().parse_args()
 
@@ -26,16 +26,13 @@ def filter_df(df, date_start = None, date_end = None):
     if date_start and date_end:
         filtered = df.loc[(df['CreationDate'] > pd.to_datetime(date_start)) & (df['CreationDate'] < pd.to_datetime(date_end))]
 
-    # filter title and body
-    filtered = filtered[['Id', 'Title', 'Body']]
-    
-    # make body and title columns into their own rows
-    filtered = filtered.melt(id_vars = ['Id'], var_name = "Title", value_name = "Text")
-    
-    # filter again
-    filtered = filtered[['Text']]
-
-    print(filtered)
+    if 'Title' in filtered.columns:
+        # filter title and/or body
+        filtered = filtered[['Id', 'Title', 'Body']]
+        # make body and title columns into their own rows
+        filtered = filtered.melt(id_vars = ['Id'], var_name = "Title", value_name = "Text")[['Text']] 
+    else:
+        filtered = filtered[['Body']]
 
     return filtered
 
@@ -51,7 +48,7 @@ def clean_df(df):
     return cleaned
 
 def df_to_csv(df, output_path):
-    df.to_csv(output_path, index=None)
+    df.to_csv(output_path, index=None, header=0)
 
 
 def init_parser():
@@ -67,7 +64,7 @@ def init_parser():
                         
     parser.add_argument('-o',
                         '--outputFile',
-                        default="./output/output.csv",
+                        default="./output.csv",
                         help="Specific output name")
     
     parser.add_argument('-ds',
