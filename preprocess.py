@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import csv
 import re
 import pandas as pd
 from datetime import datetime
@@ -28,14 +29,16 @@ def filter_df(df, date_start = None, date_end = None):
 
     if 'Title' in filtered.columns:
         # filter title and/or body
-        filtered = filtered[['Id', 'Title', 'Body']]
+        filtered = filtered[['rownum', 'Title', 'Body']]
+        print(filtered)
         # make body and title columns into their own rows
-        filtered = filtered.melt(id_vars = ['Id'], var_name = "Title", value_name = "Text")[['Text']] 
+        filtered = filtered.melt(id_vars = ['rownum'], var_name = "Title", value_name = "Text")[['rownum', 'Text']]
     else:
-        filtered = filtered[['Body']]
+        filtered = filtered[['rownum', 'Body']]
+
+    print(filtered)
 
     return filtered
-
 
 def clean_df(df):
     regex_code = re.compile('<code>.*?</code>', flags=re.DOTALL)
@@ -54,8 +57,7 @@ def clean_df(df):
     return cleaned
 
 def df_to_csv(df, output_path):
-    df.to_csv(output_path, index=None, header=0)
-
+    df.to_csv(output_path, index=None, header=False)
 
 def init_parser():
     parser = argparse.ArgumentParser(
