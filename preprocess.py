@@ -102,6 +102,7 @@ def init_parser():
 
     parser.add_argument('-c',
                         '--chunks',
+                        default=1,
                         type=int, choices=range(1, 10),
                         help="Number of chunks to split file into (1-10)")
 
