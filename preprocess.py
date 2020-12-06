@@ -30,11 +30,10 @@ def filter_df(df, date_start = None, date_end = None):
     if 'Title' in filtered.columns:
         # filter title and/or body
         filtered = filtered[['rownum', 'Title', 'Body']]
+        filtered['Body'] = filtered['Title'].astype(str) + " " + df['Body']
+        
         print(filtered)
-        # make body and title columns into their own rows
-        filtered = filtered.melt(id_vars = ['rownum'], var_name = "Title", value_name = "Text")[['rownum', 'Text']]
-    else:
-        filtered = filtered[['rownum', 'Body']]
+    filtered = filtered[['rownum', 'Body']]
 
     print(filtered)
 
@@ -57,7 +56,7 @@ def clean_df(df):
     return cleaned
 
 def df_to_csv(df, output_path):
-    df.to_csv(output_path, index=None, header=False)
+    df.to_csv(output_path, index=None)
 
 def init_parser():
     parser = argparse.ArgumentParser(
