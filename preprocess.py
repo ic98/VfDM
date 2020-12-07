@@ -3,7 +3,11 @@ import argparse
 import csv
 import re
 import pandas as pd
+import numpy as np
 from datetime import datetime
+
+# disable chained assignments
+pd.options.mode.chained_assignment = None 
 
 def main():
     args = init_parser().parse_args()
@@ -12,12 +16,13 @@ def main():
     out_file = args.outputFile
     date_start = args.dateStart
     date_end = args.dateEnd
+    num_of_chunks = args.chunks
     
     df = pd.read_csv(csv_file, parse_dates=['CreationDate'])
 
     filtered = filter_df(df, date_start, date_end)
     cleaned = clean_df(filtered)
-    df_to_csv(cleaned, out_file)
+    df_to_csv(cleaned, num_of_chunks, out_file)
 
 
 def filter_df(df, date_start = None, date_end = None):
@@ -31,32 +36,43 @@ def filter_df(df, date_start = None, date_end = None):
         # filter title and/or body
         filtered = filtered[['rownum', 'Title', 'Body']]
         filtered['Body'] = filtered['Title'].astype(str) + " " + df['Body']
-        
-        print(filtered)
+
     filtered = filtered[['rownum', 'Body']]
 
-    print(filtered)
+    # rename rownum so that it matches predictions Row
+    filtered.rename(columns = {'rownum': 'Row'}, inplace = True)
 
     return filtered
 
 def clean_df(df):
+    cleaned = df
+
     regex_code = re.compile('<code>.*?</code>', flags=re.DOTALL)
+    regex_hyperlink = re.compile('<a.*?</a>', flags=re.DOTALL)
     regex_html = re.compile('<[^>]+>')
     regex_newline = re.compile("\\t|\\n|\\r")
 
     # remove code blocks
-    cleaned = df.replace(regex_code, '', regex=True)
+    cleaned = cleaned.replace(regex_code, '', regex=True)
+    
+    #remove new line
+    cleaned = cleaned.replace(regex_hyperlink, ' ', regex=True)
 
     # remove html blocks
     cleaned = cleaned.replace(regex_html, '', regex=True)
 
     #remove new line
-    cleaned = cleaned.replace(regex_newline, ' ', regex=True)
+    cleaned = cleaned.replace(regex_newline, '', regex=True)
 
     return cleaned
 
-def df_to_csv(df, output_path):
-    df.to_csv(output_path, index=None)
+def df_to_csv(df, chunks, output_path):
+    if chunks > 1:
+        df_split = np.array_split(df, chunks)
+        for i in range(len(df_split)):
+            df_split[i].to_csv(str(i) + "_" + output_path, index=None)
+    else:
+        df.to_csv(output_path, index=None)
 
 def init_parser():
     parser = argparse.ArgumentParser(
@@ -83,6 +99,11 @@ def init_parser():
                         '--dateEnd',
                         type=lambda d: datetime.strptime(d, '%Y-%m-%d').date(),
                         help="Date end (DD-MM-YYYY)")
+
+    parser.add_argument('-c',
+                        '--chunks',
+                        type=int, choices=range(1, 10),
+                        help="Number of chunks to split file into (1-10)")
 
     return parser
 
