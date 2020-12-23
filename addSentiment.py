@@ -8,6 +8,8 @@ import pathlib
 import os
 
 # To Run: `py addSentiment.py rawDataFile.csv resultsFolder #ofchunks`
+# Results folder should have sentiment result files with file names - fileNumber_resultsFolder_results.csv
+
 # Will save new files in new folder named resultsFolder_results
 # 5 files will be generated
 # - rawDatafile with sentiment appended
