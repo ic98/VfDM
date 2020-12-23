@@ -1,5 +1,5 @@
 # VfDM
-Data mining project
+Data mining (COMP 4710) project
 
 ## How to install dependencies
 
