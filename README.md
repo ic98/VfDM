@@ -15,16 +15,16 @@ Data mining (COMP 4710) project
 ## How to run
 
 `py addSentiment.py rawDataFile.csv resultsFolder #ofchunks`
-## Will save new files in new folder named resultsFolder_results
-## Results folder should have sentiment result files with file names - fileNumber_resultsFolder_results.csv
+- Will save new files in new folder named resultsFolder_results
+- Results folder should have sentiment result files with file names - fileNumber_resultsFolder_results.csv
 
 
-## 5 files will be generated
-### - rawDatafile with sentiment appended
-### - sentiment ordered raw data file
-### - rows with negative sentiment
-### - rows with positive sentiment
-### - rows with neutral sentiment
+**5 files will be generated**
+- rawDatafile with sentiment appended
+- sentiment ordered raw data file
+- rows with negative sentiment
+- rows with positive sentiment
+- rows with neutral sentiment
 
 - example: `py preprocess.py C-Questions.csv C-questions 9` 
 - example result file: `0_C-questions_results.csv`
