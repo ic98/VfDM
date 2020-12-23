@@ -1,7 +1,7 @@
 # VfDM
 Data mining (COMP 4710) project
 
-## How to install dependencies
+# How to install dependencies
 
 `pip install -r requirements.txt`
 # preprocess.py
