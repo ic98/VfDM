@@ -18,7 +18,7 @@ Data mining (COMP 4710) project
 - Will save new files in new folder named resultsFolder_results
 - Results folder should have sentiment result files with file names - fileNumber_resultsFolder_results.csv
 - example: `py addSentiment.py C-Questions.csv C-questions 9` 
-- example result file: `0_C-questions_results.csv`
+- example result file: `C-Questions/0_C-questions_results.csv`
 
 
 **5 files will be generated**
